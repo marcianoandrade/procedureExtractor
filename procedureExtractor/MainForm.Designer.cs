@@ -60,8 +60,6 @@
             this.tbConnectionString.Name = "tbConnectionString";
             this.tbConnectionString.Size = new System.Drawing.Size(665, 20);
             this.tbConnectionString.TabIndex = 2;
-            this.tbConnectionString.Text = "Data Source=192.168.1.45\\SqlServer2008;Initial Catalog=Mig2;user=sa;pwd=4ut0L1br@" +
-    "c0m;Application Name=MES";
             // 
             // label2
             // 
@@ -80,7 +78,7 @@
             this.tbDirectory.TabIndex = 4;
             this.tbDirectory.Text = "D:\\Lixo\\SP Migplus";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -90,7 +88,7 @@
             this.Controls.Add(this.tbConnectionString);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnExport);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
