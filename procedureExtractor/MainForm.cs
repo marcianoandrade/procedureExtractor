@@ -29,7 +29,11 @@ namespace procedureExtractor
             {
                 btnExport.Text = "...";
                 btnExport.Enabled = false;
-                Task t = Task.Factory.StartNew(() => doExport());
+                Task t;
+                if (radMSSQL.Checked)
+                    t = Task.Factory.StartNew(() => doExportMSSQL());
+                else
+                    t = Task.Factory.StartNew(() => doExportMSSQL());
                 t.Wait();
                 btnExport.Text = "Done!";
                 btnExport.Enabled = true;
@@ -37,12 +41,12 @@ namespace procedureExtractor
             }
         }
 
-        private void doExport()
+        private void doExportMSSQL()
         {
             DataTable dt = new DataTable();
             using (SqlConnection conexao = new SqlConnection(tbConnectionString.Text))
             {
-                string command = "SELECT OBJECT_NAME(object_id), 'DROP PROCEDURE '+OBJECT_NAME(object_id)+'\nGO\n' + OBJECT_DEFINITION(object_id) + 'GO' FROM sys.procedures WHERE OBJECT_NAME(object_id) NOT LIKE 'sp_%' order by OBJECT_NAME(object_id)";
+                string command = "SELECT OBJECT_NAME(object_id), 'DROP PROCEDURE '+OBJECT_NAME(object_id)+'\nGO\n' + OBJECT_DEFINITION(object_id) + '\nGO' FROM sys.procedures WHERE OBJECT_NAME(object_id) NOT LIKE 'sp_%' order by OBJECT_NAME(object_id)";
                 using (SqlCommand comando = new SqlCommand(command, conexao) { CommandType = CommandType.Text })
                 {
                     if (conexao.State != ConnectionState.Open)
@@ -55,6 +59,34 @@ namespace procedureExtractor
             {
                 File.WriteAllText(tbDirectory.Text + "\\" + item[0].ToString() + ".sql", item[1].ToString(), Encoding.UTF8);
             }
+        }
+
+        private void doExportOracle()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conexao = new SqlConnection(tbConnectionString.Text))
+            {
+                string command = "SELECT OBJECT_NAME(object_id), 'DROP PROCEDURE '+OBJECT_NAME(object_id)+'\nGO\n' + OBJECT_DEFINITION(object_id) + '\nGO' FROM sys.procedures WHERE OBJECT_NAME(object_id) NOT LIKE 'sp_%' order by OBJECT_NAME(object_id)";
+                using (SqlCommand comando = new SqlCommand(command, conexao) { CommandType = CommandType.Text })
+                {
+                    if (conexao.State != ConnectionState.Open)
+                        conexao.Open();
+
+                    dt.Load(comando.ExecuteReader());
+                }
+            }
+            foreach (DataRow item in dt.Rows)
+            {
+                File.WriteAllText(tbDirectory.Text + "\\" + item[0].ToString() + ".sql", item[1].ToString(), Encoding.UTF8);
+            }
+        }
+
+        private void radOracle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radOracle.Checked)
+                pnlOwner.Visible = true;
+            else
+                pnlOwner.Visible = false;
         }
     }
 }
